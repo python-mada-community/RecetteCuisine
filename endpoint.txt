@@ -1,0 +1,39 @@
+Documentation de l'API des Recettes de Cuisine
+Introduction
+Bienvenue dans l'API des Recettes de Cuisine ! Cette API vous permet de gérer des recettes de cuisine. Vous pouvez créer, lire, mettre à jour et supprimer des recettes à l'aide des différentes routes fournies.
+
+Base de l'URL
+Toutes les requêtes à cette API doivent être préfixées par la base URL suivante :
+
+Note : Assurez-vous de modifier l'URL de base en fonction de votre propre environnement de déploiement.
+
+Opérations disponibles
+1. Récupérer toutes les recettes
+URL : /recipes
+Méthode HTTP : GET
+Description : Récupère la liste de toutes les recettes de cuisine disponibles.
+
+2. Récupérer une recette par ID
+URL : /recipes/<recipe_id>
+Méthode HTTP : GET
+Description : Récupère une recette spécifique en fonction de son ID.
+
+3. Créer une nouvelle recette
+URL : /recipes
+Méthode HTTP : POST
+Description : Crée une nouvelle recette de cuisine.
+
+4. Mettre à jour une recette existante
+URL : /recipes/<recipe_id>
+Méthode HTTP : PUT
+Description : Met à jour une recette existante en fonction de son ID.
+
+5. Supprimer une recette
+URL : /recipes/<recipe_id>
+Méthode HTTP : DELETE
+Description : Supprime une recette en fonction de son ID.
+
+Erreurs
+Les erreurs sont renvoyées avec les codes HTTP appropriés et un message d'erreur JSON.
+Conclusion
+Vous avez maintenant accès à l'API des Recettes de Cuisine ! Vous pouvez utiliser les opérations disponibles pour gérer vos recettes et créer de délicieux plats. Assurez-vous de suivre les exemples de requêtes pour interagir correctement avec l'API.
