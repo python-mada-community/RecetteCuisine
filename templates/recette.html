@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recette Cuisine-{{ recipe.name if (recipe != None) else "introuvable" }}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap-5.3.2-dist/css/bootstrap.min.css')}}">
+</head>
+<body>
+{% if recipe != None %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>{{ recipe.name }}</h1>
+            </div>
+            <div class="card-body">
+                <p>{{ recipe.instructions }}</p>
+                <div class="btn-group">
+                    <button id="delete-button" class="btn btn-danger">Supprimer Recette</button>
+                    <button id="edit-button" class="btn btn-primary">Modifier Recette</button>
+                </div>
+                <div id="edit-form" class="card" style="display: none;">
+                    <div class="card-header">
+                        <h2>Modifier la Recette</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="recipe-form">
+                            <label for="name">Nouveau Nom:</label>
+                            <input type="text" id="name" name="name" value="{{ recipe.name }}" class="form-control"><br><br>
+
+                            <label for="instructions">Nouvelles Instructions:</label>
+                            <textarea id="instructions" name="instructions" class="form-control">{{ recipe.instructions }}</textarea><br><br>
+
+                            <button type="submit" class="btn btn-success">Valider</button>
+                            <button type="button" id="cancel-button" class="btn btn-secondary">Annuler</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p>La recette n'existe pas</p>
+{% endif %}
+
+<script>
+    const deleteButton = document.getElementById('delete-button');
+    const editButton = document.getElementById('edit-button');
+    const editForm = document.getElementById('edit-form');
+    const cancelButton = document.getElementById('cancel-button');
+    const recipeForm = document.getElementById('recipe-form');
+
+    editButton.addEventListener('click', () => {
+        editForm.style.display = 'block';
+    });
+
+    cancelButton.addEventListener('click', () => {
+        editForm.style.display = 'none';
+    });
+
+    recipeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(recipeForm);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        // Envoyer une requête de mise à jour à l'API Flask
+        fetch(`/api/recipes/{{ recipe.id }}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(updatedRecipe => {
+            alert('Recette mise à jour avec succès.');
+            editForm.style.display = 'none';
+            // Actualiser la page pour afficher les nouvelles données de la recette
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la mise à jour de la recette :', error);
+            alert('Une erreur s\'est produite lors de la mise à jour de la recette.');
+        });
+    });
+
+    deleteButton.addEventListener('click', () => {
+        var recipe_id = {{ recipe.id }};
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
+            // Envoyer une requête de suppression à l'API Flask
+            fetch(`/api/recipes/${recipe_id}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // Actualiser la page après la suppression
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression de la recette :', error);
+                alert('Une erreur s\'est produite lors de la suppression de la recette.');
+            });
+        }
+    });
+</script>
+<script src="{{url_for('static', filename='bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js')}}"></script>
+</body>
+</html>
